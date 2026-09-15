@@ -1,0 +1,14 @@
+{
+  "name": "oxzoo-svelte-flask",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "4.0.4",
+    "svelte": "5.57.0",
+    "vite": "5.4.21"
+  }
+}
