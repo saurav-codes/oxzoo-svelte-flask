@@ -43,5 +43,5 @@ health_url = "http://127.0.0.1:9109/health"
 
 [[domains]]
 name = "svelte-flask.oxzoo.sorv.dev"
-tls = false
+tls = true
 spa = true
