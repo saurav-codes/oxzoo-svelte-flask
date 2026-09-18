@@ -5,10 +5,8 @@
 name = "oxzoo-svelte-flask"
 branch = "main"
 runtime = "python"
-framework = "generic"
 package_manager = "pip"
 port = 9109
-environment_file = "/etc/ox/projects/oxzoo-svelte-flask.env"
 
 required_packages = ["nodejs"]
 
