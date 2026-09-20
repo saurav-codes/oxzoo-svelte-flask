@@ -15,14 +15,14 @@ This is the official ox documentation example for deploying a Flask 3 API (serve
 
 ## Environment flow
 
-- **Backend reads its env at RUNTIME.** `wsgi.py` builds the greeting from `os.environ["GREETING_TAG"]` on every request to `/api/greeting`; the value is never in the code. ox writes it to `/etc/ox/apps/oxzoo-svelte-flask.env` from the dashboard Environment editor, so changing it only needs a service restart, not a rebuild.
+- **Backend reads its env at RUNTIME.** `wsgi.py` builds the greeting from `os.environ["GREETING_TAG"]` on every request to `/api/greeting`; the value is never in the code. ox writes it to `/srv/ox/oxzoo-svelte-flask/env` from the dashboard Environment editor, so changing it only needs a service restart, not a rebuild.
 - **Frontend reads its env at BUILD time.** `vite.config.js` sets `envPrefix: ["GREETING_", "VITE_"]`, so `GREETING_TAG` is exposed to the build and `import.meta.env.GREETING_TAG` is replaced by a string literal while bundling; `App.svelte` assembles the whole line in one expression that folds into a single bundle literal inside `dist/`. A new tag therefore needs a redeploy (rebuild), unlike the backend.
 - **The pip flow (no pyproject).** The install hooks run as the unprivileged project user, so nothing installs globally: `uv venv .venv` creates the virtualenv inside the release, `uv pip install -r requirements.txt` installs the fully pinned lockfile, and `npm install` installs the exact-pinned frontend toolchain (package-lock.json is committed).
 - **nginx** serves `dist/` with an `index.html` fallback (`spa = true`) and keeps only `/api` and `/health` proxied to the web process.
 
 ## Deploy with ox
 
-1. Paste the clone URL into ox: `https://github.com/saurav-codes/oxzoo-svelte-flask`
+1. Paste the clone URL into ox: `git@github.com:saurav-codes/oxzoo-svelte-flask`
 2. Set `GREETING_TAG` in the Environment editor BEFORE the first deploy. The backend reads it at runtime and the frontend bakes it during the deploy build; without it the page shows the tag suffix empty.
 3. Press Deploy and watch the live logs. ox runs the install and build hooks, starts gunicorn, and polls `http://127.0.0.1:9109/health` before switching traffic.
 
