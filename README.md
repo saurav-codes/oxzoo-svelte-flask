@@ -1,5 +1,7 @@
 # oxzoo-svelte-flask: Flask API + Svelte SPA (ox deploy example)
 
+Deployed with [ox](https://deploywithox.com): deploy a repo to your own server with one command, no Docker. [Docs](https://deploywithox.com/docs) · [Guide for this stack](https://deploywithox.com/docs/guides/flask)
+
 This is the official ox documentation example for deploying a Flask 3 API (served by gunicorn from a uv-created venv, plain pip/requirements.txt flow) together with a Svelte 5 SPA built by Vite 5 onto one Ubuntu VPS. A single `ox.toml` at the repo root is the whole deploy contract: ox installs dependencies as the unprivileged project user, builds `dist/`, starts gunicorn on 127.0.0.1:9109 under systemd, and has nginx serve the SPA while proxying `/api` and `/health` to the app.
 
 | Layer | Tool | Version |
