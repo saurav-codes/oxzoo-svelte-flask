@@ -1,45 +1,18 @@
-# ox.toml - ox deploy manifest for oxzoo-svelte-flask.
-# nginx serves the Svelte SPA from dist/ (spa = true) and proxies /api and
-# /health to the gunicorn process; the pip venv lives inside the release.
+# Flask API on gunicorn (pip requirements) + Svelte SPA (npm) in one repo.
 
-name = "oxzoo-svelte-flask"
-branch = "main"
-runtime = "python"
-package_manager = "pip"
-port = 9109
+[app]
+start  = ".venv/bin/gunicorn wsgi:app --bind 127.0.0.1:$PORT --workers 2"
+health = "/health"
 
-required_packages = ["nodejs"]
-
-[[apt_sources]]
-name = "nodesource"
-url = "https://deb.nodesource.com/node_22.x"
-suite = "nodistro"
-components = ["main"]
-key_url = "https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key"
-
-[frontend]
-dist = "dist"
-api_paths = ["/api", "/health"]
-
-[[processes]]
-name = "web"
-# The ./ prefix keeps ox from mangling the venv-relative gunicorn path.
-command = "./.venv/bin/gunicorn wsgi:app --bind 127.0.0.1:{port} --workers 2"
-readiness = "http://127.0.0.1:{port}/health"
-
-[deploy]
-# Multi-word elements each run as their own hook line (bash -c) as the
-# unprivileged project user: no global installs, everything lands in the
-# release (.venv, node_modules).
-install = [
-    "uv venv .venv",
-    "uv pip install -r requirements.txt",
-    "npm install",
-]
-build = ["npm", "run", "build"]
-health_url = "http://127.0.0.1:9109/health"
-
-[[domains]]
-name = "svelte-flask.oxzoo.sorv.dev"
-tls = true
+[static]
+dir = "dist"
 spa = true
+api = ["/api", "/health"]
+
+[build]
+commands = ["uv venv .venv && uv pip install --python .venv -r requirements.txt", "npm run build"]
+
+[tools]
+python = "3.13"
+uv     = "0.11"
+node   = "24"
